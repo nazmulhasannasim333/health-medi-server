@@ -41,6 +41,9 @@ async function run() {
     const db = client.db("assignment");
     const userCollection = db.collection("users");
     const suppliesCollection = db.collection("supplies");
+    const donorsCollection = db.collection("donors");
+    const communityCollection = db.collection("communities");
+    const volunteersCollection = db.collection("volunteers");
 
     // User Registration
     app.post("/api/v1/register", async (req, res) => {
@@ -84,9 +87,13 @@ async function run() {
       }
 
       // Generate JWT token
-      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: process.env.EXPIRES_IN,
-      });
+      const token = jwt.sign(
+        { email: user.email, name: user.name },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.EXPIRES_IN,
+        }
+      );
 
       res.json({
         success: true,
@@ -107,6 +114,7 @@ async function run() {
       });
     });
 
+    // create supplies
     app.post("/api/v1/supply", async (req, res) => {
       const data = req.body;
       const result = await suppliesCollection.insertOne(data);
@@ -162,6 +170,75 @@ async function run() {
       res.status(201).json({
         success: true,
         message: "Supply is deleted successfully!",
+        data: result,
+      });
+    });
+
+    // create donors
+    app.post("/api/v1/donor", async (req, res) => {
+      const data = req.body;
+      const result = await donorsCollection.insertOne(data);
+
+      res.status(201).json({
+        success: true,
+        message: "Donor created successfully!",
+        data: result,
+      });
+    });
+
+    // get all donors
+    app.get("/api/v1/donors", async (req, res) => {
+      const result = await donorsCollection.find().toArray();
+
+      res.status(201).json({
+        success: true,
+        message: "Donor retrieve successfully!",
+        data: result,
+      });
+    });
+
+    // create community post
+    app.post("/api/v1/community", async (req, res) => {
+      const data = req.body;
+      const result = await communityCollection.insertOne(data);
+
+      res.status(201).json({
+        success: true,
+        message: "Community post created successfully!",
+        data: result,
+      });
+    });
+
+    // get community post
+    app.get("/api/v1/community", async (req, res) => {
+      const result = await communityCollection.find().toArray();
+
+      res.status(201).json({
+        success: true,
+        message: "Community post retrieve successfully!",
+        data: result,
+      });
+    });
+
+    // create volunteer
+    app.post("/api/v1/volunteer", async (req, res) => {
+      const data = req.body;
+      const result = await volunteersCollection.insertOne(data);
+
+      res.status(201).json({
+        success: true,
+        message: "Volunteer post created successfully!",
+        data: result,
+      });
+    });
+
+    // get community post
+    app.get("/api/v1/volunteer", async (req, res) => {
+      const result = await volunteersCollection.find().toArray();
+
+      res.status(201).json({
+        success: true,
+        message: "Volunteer retrieve successfully!",
         data: result,
       });
     });
