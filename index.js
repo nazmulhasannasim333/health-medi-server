@@ -50,7 +50,7 @@ async function run() {
       const { name, email, password } = req.body;
 
       // Check if email already exists
-      const existingUser = await collection.findOne({ email });
+      const existingUser = await userCollection.findOne({ email });
       if (existingUser) {
         return res.status(400).json({
           success: false,
